@@ -51,7 +51,6 @@ declare type GifFrame = {
  * Yes... It is truly animating ;-)
  */
 export class AnimatedGifTexture extends BaseTexture {
-    private _engine: ThinEngine;
     private _onLoad: Nullable<() => void>
 
     private _frames: Nullable<GifFrame[]> = null;
@@ -71,10 +70,9 @@ export class AnimatedGifTexture extends BaseTexture {
      * @param onLoad defines a callback to trigger once all ready.
      */
     constructor(url: string, engine: ThinEngine, onLoad: Nullable<() => void> = null) {
-        super(null);
+        super(engine);
 
         this.name = url;
-        this._engine = engine;
         this._onLoad = onLoad;
 
         this._createInternalTexture();

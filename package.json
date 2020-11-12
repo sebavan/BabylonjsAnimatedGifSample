@@ -35,8 +35,8 @@
         "devServer": "npx webpack-dev-server -d"
     },
     "devDependencies": {
-        "@babylonjs/controls": "^1.0.0-alpha.20",
-        "@babylonjs/core": "^4.2.0-alpha.30",
+        "@babylonjs/controls": "^1.0.0-alpha.21",
+        "@babylonjs/core": "^4.2.0",
         "gif.js": "^0.2.0",
         "gifuct-js": "github:matt-way/gifuct-js",
         "ts-loader": "^5.3.3",

@@ -284,6 +284,8 @@ export class AnimatedGifTexture extends BaseTexture {
             frame.texture.dispose();
         }
 
+        this._renderTarget.dispose();
+
         // Disposes the render target associated resources
         super.dispose();
     }

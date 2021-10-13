@@ -5,6 +5,7 @@ import { ThinEngine } from "@babylonjs/core/Engines/thinEngine";
 import { PrecisionDate } from "@babylonjs/core/Misc/precisionDate";
 import { EffectWrapper, EffectRenderer } from "@babylonjs/core/Materials/effectRenderer";
 import { InternalTexture } from "@babylonjs/core/Materials/Textures/internalTexture";
+import { RenderTargetWrapper } from "@babylonjs/core/Engines/renderTargetWrapper";
 
 // Ensures Raw texture are included
 import "@babylonjs/core/Engines/Extensions/engine.rawTexture";
@@ -61,6 +62,8 @@ export class AnimatedGifTexture extends BaseTexture {
     private _patchEffectWrapper: EffectWrapper;
     private _patchEffectRenderer: EffectRenderer;
     private _renderLoopCallback: () => void;
+
+    private _renderTarget: RenderTargetWrapper;
 
     /**
      * Instantiates an AnimatedGifTexture from the following parameters.
@@ -185,7 +188,7 @@ export class AnimatedGifTexture extends BaseTexture {
         }
 
         // Creates our main render target based on the Gif dimensions
-        const renderTarget = this._engine.createRenderTargetTexture(this._frames[0].dims, { 
+        this._renderTarget = this._engine.createRenderTargetTexture(this._frames[0].dims, { 
             format: Constants.TEXTUREFORMAT_RGBA,
             generateDepthBuffer: false,
             generateMipMaps: false,
@@ -198,7 +201,7 @@ export class AnimatedGifTexture extends BaseTexture {
         this._engine._releaseTexture(this._texture);
 
         // Swap our internal texture by our new render target one
-        renderTarget._swapAndDie(this._texture);
+        this._renderTarget.texture._swapAndDie(this._texture);
 
         // And adapt its data
         this._engine.updateTextureWrappingMode(this._texture, Constants.TEXTURE_CLAMP_ADDRESSMODE, Constants.TEXTURE_CLAMP_ADDRESSMODE);
@@ -254,7 +257,7 @@ export class AnimatedGifTexture extends BaseTexture {
         });
 
         // Render the current Gif frame on top of the previous one
-        this._patchEffectRenderer.render(this._patchEffectWrapper, this._texture);
+        this._patchEffectRenderer.render(this._patchEffectWrapper, this._renderTarget);
 
         // Reset the old viewport
         this._engine.setViewport(oldViewPort);

@@ -35,15 +35,18 @@ varying vec2 vUV;
 // Color Lookup
 uniform sampler2D textureSampler;
 
+// Color mix
+uniform vec4 color;
+
 void main(void) 
 {
     // We simply display the color from the texture
     vec2 uv = vec2(vUV.x, 1.0 - vUV.y);
-    vec4 finalColor = texture2D(textureSampler, vUV);
+    vec4 finalColor = texture2D(textureSampler, vUV) * color;
 
     // With a pinch of alpha testing as defined in the data
     // Else everything could have been handled in a texSubImage2d.
-    if (finalColor.a == 0.) {
+    if (color.a == 1. && finalColor.a == 0.) {
         discard;
     }
 
@@ -58,5 +61,5 @@ export const AnimatedGifShaderConfiguration = {
     vertexShader,
     fragmentShader,
     samplerNames: ["textureSampler"],
-    uniformNames: ["world"],
+    uniformNames: ["world", "color"],
 }

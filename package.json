@@ -36,7 +36,7 @@
     },
     "devDependencies": {
         "@babylonjs/controls": "^2.0.0-alpha.1",
-        "@babylonjs/core": "^5.0.0-alpha.54",
+        "@babylonjs/core": "^5.2.0",
         "gif.js": "^0.2.0",
         "gifuct-js": "github:matt-way/gifuct-js",
         "ts-loader": "^9.2.6",

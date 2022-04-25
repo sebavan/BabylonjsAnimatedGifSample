@@ -45,6 +45,10 @@ declare type GifFrame = {
      * Current Transform Matrix to handle the patch scale and translation.
      */
     worldMatrix: Float32Array;
+    /**
+     * Indicates what happens to the data when moving onto the next frame. 2 for dispose, 3 unsuported, the rest is keep.
+     */
+    disposalType: number;
 };
 
 /**
@@ -56,6 +60,7 @@ export class AnimatedGifTexture extends BaseTexture {
 
     private _frames: Nullable<GifFrame[]> = null;
     private _currentFrame: Nullable<GifFrame>;
+    private _previousFrame: Nullable<GifFrame>;
     private _nextFrameIndex = 0;
     private _previousDate: number;
 
@@ -250,14 +255,30 @@ export class AnimatedGifTexture extends BaseTexture {
         // Record the old viewport
         const oldViewPort = this._engine.currentViewport;
 
-        // We need to apply our special inputes to the effect when it renders
+        // Clear the previous frame if requested in the Gif data
+        if (this._previousFrame && (this._previousFrame.disposalType === 2 || this._nextFrameIndex === 0)) {
+            // We need to apply our special inputs to the effect when it renders
+            this._patchEffectWrapper.onApplyObservable.addOnce(() => {
+                this._patchEffectWrapper.effect.setFloat4("color", 0, 0, 0, 0);
+                this._patchEffectWrapper.effect.setMatrix3x3("world", this._previousFrame.worldMatrix);
+                this._patchEffectWrapper.effect._bindTexture("textureSampler", this._previousFrame.texture);
+            });
+
+            this._patchEffectRenderer.render(this._patchEffectWrapper, this._renderTarget);
+        }
+
+        // We need to apply our special inputs to the effect when it renders
         this._patchEffectWrapper.onApplyObservable.addOnce(() => {
+            this._patchEffectWrapper.effect.setFloat4("color", 1, 1, 1, 1);
             this._patchEffectWrapper.effect.setMatrix3x3("world", frame.worldMatrix);
             this._patchEffectWrapper.effect._bindTexture("textureSampler", frame.texture);
         });
 
         // Render the current Gif frame on top of the previous one
         this._patchEffectRenderer.render(this._patchEffectWrapper, this._renderTarget);
+
+        // Save the disposal type for the next update
+        this._previousFrame = frame;
 
         // Reset the old viewport
         this._engine.setViewport(oldViewPort);

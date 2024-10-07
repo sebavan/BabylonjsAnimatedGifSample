@@ -18,6 +18,6 @@ For VSCode users, if you have installed the Chrome Debugging extension, you can 
 
 ## Live Demo
 
-All available in the famous [Babylon.js website](https://www.babylonjs.com/demos/animatedgif/).
+All available in the famous [Babylon.js website](https://www.babylonjs.com/Demos/AnimatedGif/#).
 
 And please have a read at the associated article on [Medium](https://medium.com/@babylonjs/animated-gifs-in-webgl-55a6c7bc9c93)

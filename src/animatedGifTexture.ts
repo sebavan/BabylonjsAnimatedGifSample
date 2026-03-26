@@ -153,7 +153,7 @@ export class AnimatedGifTexture extends BaseTexture {
      */
     private _parseGifData(buffer: ArrayBuffer): void {
         const gifData = parseGIF(buffer);
-        this._frames = decompressFrames(gifData, true);
+        this._frames = decompressFrames(gifData, true) as unknown as GifFrame[];
     }
 
     /**
